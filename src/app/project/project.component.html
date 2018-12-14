@@ -1,0 +1,206 @@
+<form #projectForm="ngForm">
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-2">
+        <label for="projectName">Project Name:</label>
+      </div>
+      <div class="col-md-10">
+        <input type="text" required placeholder="Project Name" class="form-control" id="projectName" name="projectName"
+          [(ngModel)]="_projectName" #projectName="ngModel" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-10">
+        <div *ngIf="projectName.errors && (projectName.dirty || projectName.touched)" class="alert alert-danger">
+          <div [hidden]="!projectName.errors.required">
+            Project Name is required!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-4">
+        <input type="checkbox" id="dateCheckBox" name="dateCheckBox" #dateCheckBox="ngModel" [(ngModel)]="_dateCheckbox"
+          (change)="manipulateDate()"> <label style="padding:0 10px 0 10px">Set Start and End Date</label>
+      </div>
+      <div class="col-md-3">
+        <label>Start Date:</label>
+        <input type="date" [disabled]="!_isDateEnabled" id="fromDate" name="fromDate" #fromDate="ngModel" [(ngModel)]="_fromDate"
+          (blur)="compareDates()">
+      </div>
+      <div class="col-md-3">
+        <label>End Date:</label>
+        <input type="date" [disabled]="!_isDateEnabled" id="toDate" name="toDate" #toDate="ngModel" [(ngModel)]="_endDate"
+          (blur)="compareDates()">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-10">
+        <div *ngIf="_dateError.isError" class="alert alert-danger">
+          {{ _dateError.errorMessage }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-2">
+          <label for="priority">Priority: </label>
+        </div>
+        <div class="col-md-2">
+          <input type="range" min="0" max="30" step="1" id="priority" class="form-control" oninput="priorityId.value = priority.value"
+            name="priority" #priority="ngModel" [(ngModel)]="_priority">
+        </div>
+        <div class="col-md-2">
+          <output name="priorityName" id="priorityId">0</output>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-2">
+          <label for="managerName">Manager:</label>
+        </div>
+        <div class="col-md-8">
+          <input type="text" required placeholder="Choose Manager" class="form-control" id="managerName" name="managerName"
+            [(ngModel)]="_selectedProjectManager" #managerName="ngModel" readonly="readonly" />
+        </div>
+        <div class="col-md-2">
+          <button type="button" class="btn btn-primary" (click)="openModal()">Search</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-10">
+          <div *ngIf="managerName.errors && (managerName.dirty || managerName.touched)" class="alert alert-danger">
+            <div [hidden]="!managerName.errors.required">
+              Manager is required!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row" style="border-bottom: 1px solid blue">
+      <div class="col-md-8"></div>
+      <div class="col-md-4 text-right">
+        <div class="form-group">
+          <button type="submit" *ngIf="this.isInsert" class="btn btn-primary" style="margin-right: 20px;" (click)="insertProject()"
+            [disabled]="!projectForm.form.valid || _dateError.isError">Add</button>
+          <button type="submit" *ngIf="!this.isInsert" class="btn btn-primary" style="margin-right: 20px;" (click)="updateProject()"
+            [disabled]="!projectForm.form.valid || _dateError.isError">Update</button>
+          <button type="button" class="btn btn-warning" (click)="resetProject()">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div *ngIf='errorMessage' class='alert alert-danger'>
+  Error: {{ errorMessage }}
+</div>
+
+<div class="container">
+  <div class="row" style="padding-top: 5px;">
+    <div class="col-md-12">
+      <div class="form-group">
+        <input type='text' class="form-control" placeholder="Search..." [(ngModel)]='listFilter' />
+      </div>
+    </div>
+  </div>
+  <div class="row" style="padding-bottom: 5px;">
+    <div class="col-md-12">
+      Sort:
+      <button type="button" class="btn btn-info sort" (click)="sortByStartDate()">Start Date</button>
+      <button type="button" class="btn btn-info sort" (click)="sortByEndDate()">End Date</button>
+      <button type="button" class="btn btn-info sort" (click)="sortByPriority()">Priority</button>
+      <button type="button" class="btn btn-info sort" (click)="sortByCompleted()">Completed</button>
+    </div>
+  </div>
+</div>
+<div *ngFor='let project of filteredProjects' class="row" style="border-top: 1px dotted red; padding : 2px 0 2px 0;">
+  <div class="col-md-8">
+    <ul class="list-group">
+      <li class="list-group-item">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              Project: {{project.Project_Name}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              No of Tasks:
+            </div>
+            <div class="col-md-6">
+              Completed:
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              Start Date: {{project.StartDate | date:'dd/MM/yyyy'}}
+            </div>
+            <div class="col-md-6">
+              End Date: {{project.EndDate | date:'dd/MM/yyyy'}}
+            </div>
+          </div>
+        </div>
+
+      </li>
+    </ul>
+  </div>
+  <div class="col-md-2 text-center">
+    <ul class="list-group">
+      <li class="list-group-item">Priority</li>
+      <li class="list-group-item">{{project.Priority}}</li>
+    </ul>
+  </div>
+  <div class="col-md-2 text-right">
+    <button type="button" class="btn btn-info" style="margin-bottom: 5px;" (click)="editProject(project)">Update</button>
+    <br>
+    <button type="button" class="btn btn-danger">Suspend</button>
+  </div>
+</div>
+<div class="container">
+  <!-- The Modal -->
+  <div class="modal" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Choose Manager</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <select *ngIf='_usersToDisplay && _usersToDisplay.length' id="projectManagerId" name="projectManagerId"
+            #projectManagerId="ngModel" [(ngModel)]="_selectedProjectManager" (change)="selectName();">
+            <option selected="" value=""></option>
+            <option [value]="user.User_ID" *ngFor="let user of _usersToDisplay">
+              {{user.FirstName + "," + user.LastName + "(" + user.Employee_ID + ")"}}
+            </option>
+          </select>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="closeModal()">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
