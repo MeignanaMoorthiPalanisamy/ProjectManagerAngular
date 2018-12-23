@@ -111,7 +111,7 @@
         <div class="modal-body">
           <select  data-placeholder="Choose a project..." *ngIf='_projetToDisplay && _projetToDisplay.length' id="projectId" name="projectId" #projecId="ngModel"
             [(ngModel)]="_selectedProjectName">
-            <option value="">  </option>
+            <option value=""></option>
             <option [value]="project.Project_Id" *ngFor="let project of _projetToDisplay">
               {{project.Project_Name}}
             </option>
