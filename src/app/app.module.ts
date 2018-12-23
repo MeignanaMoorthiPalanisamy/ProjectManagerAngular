@@ -11,6 +11,7 @@ import {HttpClientModule} from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ProjectComponent } from './project/project.component';
 import { TaskComponent } from './task/task.component';
+import { ViewtaskComponent } from './viewtask/viewtask.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { TaskComponent } from './task/task.component';
     AppComponent,
     UsersComponent,
     ProjectComponent,
-    TaskComponent
+    TaskComponent,
+    ViewtaskComponent
   ],
   imports: [
     BrowserModule,
@@ -29,6 +31,8 @@ import { TaskComponent } from './task/task.component';
       { path: 'users', component: UsersComponent },
       { path: 'projects', component: ProjectComponent },
       { path: 'tasks', component: TaskComponent },
+      { path: 'viewtasks', component: ViewtaskComponent },
+      { path: 'task/:id', component: TaskComponent },
       { path: '', redirectTo: 'welcome', pathMatch: 'full' },
       { path: '**', redirectTo: 'welcome', pathMatch: 'full' }
     ])],

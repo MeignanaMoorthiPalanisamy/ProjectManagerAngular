@@ -117,11 +117,16 @@ export class ProjectComponent implements OnInit {
     this._projectName = project.Project_Name;
     this._projectIdToEdit = project.Project_Id;
     this._priority = project.Priority;
-    this._selectedProjectManagerId = project.User_ID;
+    this._selectedProjectManagerId = project.User_ID == null ? '' : project.User_ID ;
     $('#priorityId').val(project.Priority);
     var editableUser = this._usersToDisplay.find(x => x.User_ID == project.User_ID);
     if (editableUser != undefined)
+    {
       this._selectedProjectManager = editableUser.FirstName + "," + editableUser.LastName + "(" + editableUser.Employee_ID + ")";
+    }
+    else{
+      this._selectedProjectManager = '';
+    }
   }
 
   closeModal(): void {

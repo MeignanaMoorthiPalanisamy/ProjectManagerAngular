@@ -21,4 +21,6 @@ export interface IDisplayProjectDetail {
     Priority: number;
     User_ID: number;
     Project_Id : number;
+    Total_Tasks: number;
+    Completed_Tasks: number;
 }

@@ -1,3 +1,287 @@
-<p>
-  task works!
-</p>
+<form #taskForm="ngForm">
+  <div class="form-group">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-2">
+          <label for="projectName">Project:</label>
+        </div>
+        <div class="col-md-8">
+          <input type="text" required [disabled]="_isParentTask" placeholder="Choose Project" class="form-control" id="projectName" name="projectName"
+            [(ngModel)]="_selectedProjectName" readonly="readonly" />
+        </div>
+        <div class="col-md-2">
+          <button type="button" class="btn btn-primary" [disabled]="_isEdit"  (click)="openProjectModal()">Search</button>
+        </div>
+      </div>
+      <!-- <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-10">
+          <div *ngIf="projectName.errors && (projectName.dirty || projectName.touched)" class="alert alert-danger">
+            <div [hidden]="!projectName.errors.required">
+              Project is required!
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-2">
+          <label for="taskName">Task:</label>
+        </div>
+        <div class="col-md-10">
+          <input type="text" required placeholder="Task Name" class="form-control" id="taskName" name="taskName"
+            [(ngModel)]="_taskName" #taskName="ngModel" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-10">
+          <div *ngIf="taskName.errors && (taskName.dirty || taskName.touched)" class="alert alert-danger">
+            <div [hidden]="!taskName.errors.required">
+              Task Name is required!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-10">
+        <input type="checkbox" id="parentCheckBox" name="parentCheckBox" #parentCheckBox="ngModel" [(ngModel)]="_isParentTask"
+          (change)="ParentTaskValidation()"> <label style="padding:0 10px 0 10px">Parent Task</label>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-2">
+          <label for="priority">Priority: </label>
+        </div>
+        <div class="col-md-2">
+          <input [disabled]="_isParentTask" type="range" min="0" max="30" step="1" id="priority" class="form-control"
+            oninput="priorityId.value = priority.value" name="priority" [(ngModel)]="_priority">
+        </div>
+        <div class="col-md-2">
+          <output name="priorityName" id="priorityId">0</output>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-2">
+          <label for="parentTask">Parent Task:</label>
+        </div>
+        <div class="col-md-8">
+          <input type="text" [disabled]="_isParentTask" placeholder="Choose Parent Task" class="form-control" id="parentTask"
+            name="parentTask" #parentTask="ngModel" [(ngModel)]="_selectedParentTaskName" readonly="readonly" />
+        </div>
+        <div class="col-md-2">
+          <button type="button" [disabled]="_isParentTask" class="btn btn-primary" (click)="openParentTaskModal()">Search</button>
+        </div>
+      </div>
+      <!-- <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-10">
+          <div *ngIf="parentTask.errors && (parentTask.dirty || parentTask.touched)" class="alert alert-danger">
+            <div [hidden]="!parentTask.errors.required">
+              Parent Task is required!
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          Start Date:
+        </div>
+        <div class="col-md-3">
+          <input [disabled]="_isParentTask" type="date" id="fromDate" name="fromDate" [(ngModel)]="_fromDate" (blur)="compareDates()">
+        </div>
+        <div class="col-md-3">
+          End Date:
+        </div>
+        <div class="col-md-3">
+          <input [disabled]="_isParentTask" type="date" id="toDate" name="toDate" [(ngModel)]="_endDate" (blur)="compareDates()">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-10">
+          <div *ngIf="_dateError.isError" class="alert alert-danger">
+            {{ _dateError.errorMessage }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-2">
+          <label for="userName">User:</label>
+        </div>
+        <div class="col-md-8">
+          <input [disabled]="_isParentTask" required type="text" placeholder="Choose User" class="form-control" id="userName"
+            name="userName" #userName="ngModel" [(ngModel)]="_selectedUserName" readonly="readonly" />
+        </div>
+        <div class="col-md-2">
+          <button [disabled]="_isParentTask" type="button" class="btn btn-primary" (click)="openUserModal()">Search</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-2">
+          <label for="taskStatus"> Status:</label>
+        </div>
+        <div class="col-md-10">
+          <select class="form-control" id="taskStatus" [disabled]="_isParentTask || _isEdit" name="taskStatus" [(ngModel)]="_selectedStatus">
+            <option value="Not Started">Not Started</option>
+            <option value="Active">Active</option>
+            <option value="On Hold">On Hold</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8"></div>
+      <div class="col-md-4 text-right">
+        <div class="form-group">
+          <button type="submit" *ngIf="this.isInsert" class="btn btn-primary" style="margin-right: 20px;" (click)="insertTask()"
+            [disabled]="!taskForm.form.valid || _dateError.isError">Add</button>
+          <button type="submit" *ngIf="!this.isInsert" class="btn btn-primary" style="margin-right: 20px;" (click)="updateTask()"
+            [disabled]="!taskForm.form.valid">Update</button>
+          <button type="button" class="btn btn-warning" (click)="resetTask()">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="container">
+  <!-- The Modal -->
+  <div class="modal" id="projectModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Choose Project</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <select *ngIf='_projetToDisplay && _projetToDisplay.length' id="projectId" name="projectId" #projecId="ngModel"
+            [(ngModel)]="_selectedProjectName">
+            <option selected="" value=""></option>
+            <option [value]="project.Project_Id" *ngFor="let project of _projetToDisplay">
+              {{project.Project_Name}}
+            </option>
+          </select>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="selectProjectFromModal()">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- The Modal -->
+  <div class="modal" id="userModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Choose User</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <select *ngIf='_usersToDisplay && _usersToDisplay.length' id="userId" name="userId" #userId="ngModel"
+            [(ngModel)]="_selectedUserName">
+            <option selected="" value=""></option>
+            <option [value]="user.User_ID" *ngFor="let user of _usersToDisplay">
+              {{user.FirstName + "," + user.LastName + "(" + user.Employee_ID + ")"}}
+            </option>
+          </select>
+        </div>
+
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="selectUserFromModal()">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- The Modal -->
+  <div class="modal" id="parentTaskModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Choose Parent Task</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <select *ngIf='_parentTaskToDisplay && _parentTaskToDisplay.length' id="parentTaskId" name="parentTaskId"
+            #parentTaskId="ngModel" [(ngModel)]="_selectedParentTaskName">
+            <option selected="" value=""></option>
+            <option [value]="parentTask.Parent_ID" *ngFor="let parentTask of _parentTaskToDisplay">
+              {{parentTask.Parent_Task_Name}}
+            </option>
+          </select>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="selectParentTaskFromModal()">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="alert alert-success" style="display: none" id="success-alert">
+  <button type="button" class="close" (click)="closeAlert()">x</button>
+  <strong>Success! </strong>
+   Data saved to database.
+</div>
