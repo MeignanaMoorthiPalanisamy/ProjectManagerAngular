@@ -11,8 +11,8 @@ import { IUserDetail, ICreateProjectDetail, IDisplayProjectDetail } from './proj
 
 export class ProjectService {
 
-    private userUrl = 'http://localhost:56755/api/User';
-    private projectUrl = 'http://localhost:56755/api/Projects';
+    private userUrl = 'http://localhost:4747/api/User';
+    private projectUrl = 'http://localhost:4747/api/Projects';
 
     constructor(private http: HttpClient) { }
 

@@ -14,9 +14,9 @@ export class ViewTaskService {
 
     constructor(private http: HttpClient) { }
 
-    private projectUrl = 'http://localhost:56755/api/Projects';
-    private viewTaskUrl = 'http://localhost:56755/api/TaskList/';
-    private updateViewUrl = 'http://localhost:56755/api/Tasks/';
+    private projectUrl = 'http://localhost:4747/api/Projects';
+    private viewTaskUrl = 'http://localhost:4747/api/TaskList/';
+    private updateViewUrl = 'http://localhost:4747/api/Tasks/';
 
     getAllProjects(): Observable<IDisplayProjectDetail[]> {
         return this.http.get<IDisplayProjectDetail[]>(this.projectUrl).pipe(

@@ -192,7 +192,19 @@ export class ProjectComponent implements OnInit {
       }
     );
   }
-
+  sortByCompleted(): void {
+    this.filteredProjects = this.projects.sort(
+      function (o1, o2) {
+        var completed1 = o1.Completed_Tasks;
+        var completed2 = o2.Completed_Tasks;
+        if (completed1 < completed2)
+          return -1;
+        if (completed1 > completed2)
+          return 1;
+        return 0;
+      }
+    );
+  }
 
   //Service calls
   insertProject(): void {
@@ -228,7 +240,9 @@ export class ProjectComponent implements OnInit {
       EndDate: this._endDate,
       Priority: this._priority,
       User_ID: this._selectedProjectManagerId,
-      Project_Id: this._projectIdToEdit
+      Project_Id: this._projectIdToEdit,
+      Total_Tasks: 0,
+      Completed_Tasks: 0
     };
     console.log(projectDetail);
     this.errorMessage = '';

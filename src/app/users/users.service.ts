@@ -9,7 +9,7 @@ import { IUser, IUserCreate } from './user';
     providedIn: 'root'
 })
 export class UserService {
-    private userUrl = 'http://localhost:56755/api/User';
+    private userUrl = 'http://localhost:4747/api/User';
 
     constructor(private http: HttpClient) { }
 

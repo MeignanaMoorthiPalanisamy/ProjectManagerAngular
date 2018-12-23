@@ -13,10 +13,10 @@ import { IDisplayTask } from '../viewtask/viewtask';
 
 export class TaskService {
 
-    private userUrl = 'http://localhost:56755/api/User';
-    private projectUrl = 'http://localhost:56755/api/Projects';
-    private parentTaskUrl = 'http://localhost:56755/api/ParentTask';
-    private taskUrl = 'http://localhost:56755/api/Tasks';
+    private userUrl = 'http://localhost:4747/api/User';
+    private projectUrl = 'http://localhost:4747/api/Projects';
+    private parentTaskUrl = 'http://localhost:4747/api/ParentTask';
+    private taskUrl = 'http://localhost:4747/api/Tasks';
 
 
     constructor(private http: HttpClient) { }
